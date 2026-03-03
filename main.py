@@ -4,6 +4,7 @@ if __name__ == '__main__':
     try:
         import sys
         from pathlib import Path
+        from dotenv import load_dotenv
     except Exception as error:
         print(f'ERROR - [Main:S1] - {error}')
 
@@ -19,25 +20,35 @@ if __name__ == '__main__':
         parent_folder_path = Path.cwd()
         input_folder_path = parent_folder_path / 'input'
         output_folder_path = parent_folder_path / 'output'
+        env_file_path = parent_folder_path / '.env'
     except Exception as error:
         print(f'ERROR - [Main:S3] - {error}')
 
-    # Calling "merge_csv_files" Function:S4
+    # Load Environment Variables From .env File:S4
+    try:
+        # Check if .env file exists
+        if (not env_file_path.exists()):
+            raise FileNotFoundError(f'.env File Not Found At {env_file_path}')
+        # Load .env file and populate os.environ
+        load_dotenv(dotenv_path = str(env_file_path), override = True)
+    except Exception as error:
+        print(f'ERROR - [Main:S4] - {error}')
+
+    # Calling "merge_csv_files" Function:S5
     try:
         print('STEP-1 -- Merging All The CSV Files')
         merge_csv_files_backend_response = merge_csv_files(input_folder_path = str(input_folder_path), output_folder_path = str(output_folder_path))
         # Validate backend response is not empty or None
         if (merge_csv_files_backend_response is None) or (not merge_csv_files_backend_response):
-            print(f'ERROR - [Main:S4] - Invalid Response From "merge_csv_files" Micro-Service Backend')
+            print(f'ERROR - [Main:S5] - Invalid Response From "merge_csv_files" Micro-Service Backend')
         else:
             # check the resposne from "merge_csv_files" function and print appropriate message
             if (str(merge_csv_files_backend_response['status']).upper() == 'SUCCESS'):
-                if (merge_csv_files_backend_response.get('file_path') != 'N/A'):
+                if (merge_csv_files_backend_response.get('merge_csv_file_path') != 'N/A'):
                     print(f'STEP-1 -- {merge_csv_files_backend_response["message"]}')
-                    print(f'STEP-1 -- Merged CSV File Path: {merge_csv_files_backend_response["file_path"]}')
                 else:
-                    print(f'ERROR - [Main:S4] - File Path Is Not Available')
+                    print(f'ERROR - [Main:S5] - File Path Is Not Available')
             if (str(merge_csv_files_backend_response['status']).upper() == 'ERROR'):
-                print(f'ERROR - [Main:S4] - {merge_csv_files_backend_response["message"]}')
+                print(f'ERROR - [Main:S5] - {merge_csv_files_backend_response["message"]}')
     except Exception as error:
-        print(f'ERROR - [Main:S4] - {error}')
+        print(f'ERROR - [Main:S5] - {error}')

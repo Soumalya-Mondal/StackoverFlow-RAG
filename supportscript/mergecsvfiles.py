@@ -5,20 +5,20 @@ def merge_csv_files(input_folder_path: str, output_folder_path: str) -> dict:
         from pathlib import Path
         import pandas
     except Exception as error:
-        return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S1] - {error}', 'file_path': 'N/A'}
+        return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S1] - {error}', 'merge_csv_file_path': 'N/A'}
 
     # Fetch All CSV Files From Input Folder:S2
     try:
         input_folder_path_object = Path(input_folder_path)
         # Check if input folder exists
         if (not input_folder_path_object.exists()):
-            return {'status': 'ERROR', 'message': 'ERROR - [MergeCSVFiles:S2] - Input Folder Does Not Exist', 'file_path': 'N/A'}
+            return {'status': 'ERROR', 'message': 'ERROR - [MergeCSVFiles:S2] - Input Folder Does Not Exist', 'merge_csv_file_path': 'N/A'}
         # Recursively collect all .csv files from input folder and subdirectories
         csv_files_list = list(input_folder_path_object.rglob('*.csv'))
         if (not csv_files_list):
-            return {'status': 'ERROR', 'message': 'ERROR - [MergeCSVFiles:S2] - No CSV Files Found', 'file_path': 'N/A'}
+            return {'status': 'ERROR', 'message': 'ERROR - [MergeCSVFiles:S2] - No CSV Files Found', 'merge_csv_file_path': 'N/A'}
     except Exception as error:
-        return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S2] - {error}', 'file_path': 'N/A'}
+        return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S2] - {error}', 'merge_csv_file_path': 'N/A'}
 
     # Read CSV Files And Extract Required Columns:S3
     try:
@@ -34,9 +34,9 @@ def merge_csv_files(input_folder_path: str, output_folder_path: str) -> dict:
                 csv_file_dataframe = csv_file_dataframe[["question_title", "question_id"]]
                 combined_dataframes.append(csv_file_dataframe)
             except KeyError:
-                return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S3] - Missing Required Columns In File: {csv_file.name}', 'file_path': 'N/A'}
+                return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S3] - Missing Required Columns In File: {csv_file.name}', 'merge_csv_file_path': 'N/A'}
     except Exception as error:
-        return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S3] - {error}', 'file_path': 'N/A'}
+        return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S3] - {error}', 'merge_csv_file_path': 'N/A'}
 
     # Merge CSV Dataframes Into Single Dataframe:S4
     try:
@@ -51,7 +51,7 @@ def merge_csv_files(input_folder_path: str, output_folder_path: str) -> dict:
         # Reset index after sorting
         merged_final_dataframe = merged_final_dataframe.reset_index(drop = True)
     except Exception as error:
-        return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S4] - {error}', 'file_path': 'N/A'}
+        return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S4] - {error}', 'merge_csv_file_path': 'N/A'}
 
     # Save Merged Dataframe To "output" Folder:S5
     try:
@@ -67,6 +67,6 @@ def merge_csv_files(input_folder_path: str, output_folder_path: str) -> dict:
         merged_final_dataframe.to_csv(output_file, index = False)
         # Delete "merged_final_dataframe" to save memory
         del merged_final_dataframe
-        return {'status': 'SUCCESS', 'message': f'Successfully Merged {len(csv_files_list)} CSV files', 'file_path': str(output_file_absolute_path)}
+        return {'status': 'SUCCESS', 'message': f'Successfully Merged {len(csv_files_list)} CSV files', 'merge_csv_file_path': str(output_file_absolute_path)}
     except Exception as error:
-        return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S5] - {error}', 'file_path': 'N/A'}
+        return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S5] - {error}', 'merge_csv_file_path': 'N/A'}
