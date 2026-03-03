@@ -32,7 +32,11 @@ if __name__ == '__main__':
         else:
             # check the resposne from "merge_csv_files" function and print appropriate message
             if (str(merge_csv_files_backend_response['status']).upper() == 'SUCCESS'):
-                print(f'STEP-1 -- {merge_csv_files_backend_response["message"]}')
+                if (merge_csv_files_backend_response.get('file_path') != 'N/A'):
+                    print(f'STEP-1 -- {merge_csv_files_backend_response["message"]}')
+                    print(f'STEP-1 -- Merged CSV File Path: {merge_csv_files_backend_response["file_path"]}')
+                else:
+                    print(f'ERROR - [Main:S4] - File Path Is Not Available')
             if (str(merge_csv_files_backend_response['status']).upper() == 'ERROR'):
                 print(f'ERROR - [Main:S4] - {merge_csv_files_backend_response["message"]}')
     except Exception as error:
