@@ -4,7 +4,6 @@ def merge_csv_files(input_folder_path: str, output_folder_path: str) -> dict[str
     try:
         from pathlib import Path
         import pandas
-        from tqdm import tqdm
     except Exception as error:
         return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S1] - {error}'}
 
@@ -26,13 +25,13 @@ def merge_csv_files(input_folder_path: str, output_folder_path: str) -> dict[str
         # Read only required columns from CSV files
         required_columns = ["Question_ID", "Question_Title"]
         combined_dataframes = []
-        for csv_file in tqdm(csv_files_list, desc="Reading CSV Files", bar_format='{desc}: {percentage:.0f}%|{bar}| {n_fmt}/{total_fmt}'):
+        for csv_file in csv_files_list:
             try:
                 csv_file_dataframe = pandas.read_csv(csv_file, usecols = required_columns)
                 # Rename columns to lowercase with underscores
                 csv_file_dataframe = csv_file_dataframe.rename(columns = {"Question_ID": "question_id", "Question_Title": "question_title"})
-                # Reorder columns: "question_id" first, then "question_title"
-                csv_file_dataframe = csv_file_dataframe[["question_id", "question_title"]]
+                # Reorder columns: "question_title" first, then "question_id"
+                csv_file_dataframe = csv_file_dataframe[["question_title", "question_id"]]
                 combined_dataframes.append(csv_file_dataframe)
             except KeyError:
                 return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S3] - Missing Required Columns In File: {csv_file.name}'}
@@ -45,6 +44,12 @@ def merge_csv_files(input_folder_path: str, output_folder_path: str) -> dict[str
         merged_final_dataframe = pandas.concat(combined_dataframes, ignore_index = True)
         # Delete "combined_dataframes" to save memory
         del combined_dataframes
+        # Remove duplicate rows based on "question_id" and "question_title"
+        merged_final_dataframe = merged_final_dataframe.drop_duplicates(subset = ['question_id', 'question_title'], keep = 'first')
+        # Sort by "question_id" in ascending order
+        merged_final_dataframe = merged_final_dataframe.sort_values(by = 'question_id', ascending = True)
+        # Reset index after sorting
+        merged_final_dataframe = merged_final_dataframe.reset_index(drop = True)
     except Exception as error:
         return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S4] - {error}'}
 

@@ -24,14 +24,15 @@ if __name__ == '__main__':
 
     # Calling "merge_csv_files" Function:S4
     try:
+        print('STEP-1 -- Merging All The CSV Files')
         merge_csv_files_backend_response = merge_csv_files(input_folder_path = str(input_folder_path), output_folder_path = str(output_folder_path))
         # Validate backend response is not empty or None
         if (merge_csv_files_backend_response is None) or (not merge_csv_files_backend_response):
-            print(f'ERROR - [Main:S4] - Invalid Response From Backend')
+            print(f'ERROR - [Main:S4] - Invalid Response From "merge_csv_files" Micro-Service Backend')
         else:
             # check the resposne from "merge_csv_files" function and print appropriate message
             if (str(merge_csv_files_backend_response['status']).upper() == 'SUCCESS'):
-                print(f'SUCCESS - [Main:S4] - {merge_csv_files_backend_response["message"]}')
+                print(f'STEP-1 -- {merge_csv_files_backend_response["message"]}')
             if (str(merge_csv_files_backend_response['status']).upper() == 'ERROR'):
                 print(f'ERROR - [Main:S4] - {merge_csv_files_backend_response["message"]}')
     except Exception as error:
