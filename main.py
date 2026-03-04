@@ -12,6 +12,8 @@ if __name__ == '__main__':
     try:
         sys.path.append(str(Path.cwd()))
         from supportscript.mergecsvfiles import merge_csv_files
+        from supportscript.datavectorstore import data_vector_store
+        from supportscript.apicredentialcheck import api_credential_check
     except Exception as error:
         print(f'ERROR - [Main:S2] - {error}')
 
@@ -52,3 +54,35 @@ if __name__ == '__main__':
                 print(f'ERROR - [Main:S5] - {merge_csv_files_backend_response["message"]}')
     except Exception as error:
         print(f'ERROR - [Main:S5] - {error}')
+
+    # Calling "api_credential_check" Function:S6
+    try:
+        print('STEP-6 -- Checking API Credentials')
+        api_credential_check_backend_response = api_credential_check()
+        # Validate backend response is not empty or None
+        if (api_credential_check_backend_response is None) or (not api_credential_check_backend_response):
+            print(f'ERROR - [Main:S6] - Invalid Response From "api_credential_check" Micro-Service Backend')
+        else:
+            # check the response from "api_credential_check" function and print appropriate message
+            if (str(api_credential_check_backend_response['status']).upper() == 'SUCCESS'):
+                print(f'STEP-6 -- {api_credential_check_backend_response["message"]}')
+            if (str(api_credential_check_backend_response['status']).upper() == 'ERROR'):
+                print(f'ERROR - [Main:S6] - {api_credential_check_backend_response["message"]}')
+    except Exception as error:
+        print(f'ERROR - [Main:S6] - {error}')
+
+    # Calling "data_vector_store" Function:S7
+    try:
+        print('STEP-2 -- Creating Vector Store From CSV')
+        data_vector_store_backend_response = data_vector_store(csv_file_path = str(merge_csv_files_backend_response['merge_csv_file_path']))
+        # Validate backend response is not empty or None
+        if (data_vector_store_backend_response is None) or (not data_vector_store_backend_response):
+            print(f'ERROR - [Main:S7] - Invalid Response From "data_vector_store" Micro-Service Backend')
+        else:
+            # check the response from "data_vector_store" function and print appropriate message
+            if (str(data_vector_store_backend_response['status']).upper() == 'SUCCESS'):
+                print(f'STEP-2 -- {data_vector_store_backend_response["message"]}')
+            if (str(data_vector_store_backend_response['status']).upper() == 'ERROR'):
+                print(f'ERROR - [Main:S7] - {data_vector_store_backend_response["message"]}')
+    except Exception as error:
+        print(f'ERROR - [Main:S7] - {error}')
