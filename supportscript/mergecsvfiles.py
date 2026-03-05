@@ -67,6 +67,6 @@ def merge_csv_files(input_folder_path: str, output_folder_path: str) -> dict:
         merged_final_dataframe.to_csv(output_file, index = False)
         # Delete "merged_final_dataframe" to save memory
         del merged_final_dataframe
-        return {'status': 'SUCCESS', 'message': f'Successfully Merged {len(csv_files_list)} CSV files', 'merge_csv_file_path': str(output_file_absolute_path)}
+        return {'status': 'SUCCESS', 'message': f'Successfully Merged {len(csv_files_list)} CSV Files', 'merge_csv_file_path': str(output_file_absolute_path)}
     except Exception as error:
         return {'status': 'ERROR', 'message': f'ERROR - [MergeCSVFiles:S5] - {error}', 'merge_csv_file_path': 'N/A'}
