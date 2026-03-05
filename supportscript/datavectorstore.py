@@ -42,7 +42,15 @@ def data_vector_store(csv_file_path: str) -> dict:
     except Exception as error:
         return {'status': 'ERROR', 'message': f'ERROR - [DataVectorStore:S2] - {error}'}
 
-    # Load CSV as Documents:S3
+    # Check If Vector Store Already Exists:S3
+    try:
+        chroma_db_file_path = os.path.join('kbdb', 'chroma.sqlite3')
+        if os.path.exists(chroma_db_file_path):
+            return {'status': 'SUCCESS', 'message': 'Vector Store Already Exists'}
+    except Exception as error:
+        return {'status': 'ERROR', 'message': f'ERROR - [DataVectorStore:S3] - {error}'}
+
+    # Load CSV as Documents:S4
     try:
         df = pandas.read_csv(csv_file_path)
         required_cols = {'question_title', 'question_id'}
@@ -63,9 +71,9 @@ def data_vector_store(csv_file_path: str) -> dict:
             )
             documents.append(doc)
     except Exception as error:
-        return {'status': 'ERROR', 'message': f'ERROR - [DataVectorStore:S3] - {error}'}
+        return {'status': 'ERROR', 'message': f'ERROR - [DataVectorStore:S4] - {error}'}
 
-    # Create Vector Store from Documents:S4
+    # Create Vector Store from Documents:S5
     try:
         Chroma.from_documents(
             documents = documents,
@@ -74,6 +82,14 @@ def data_vector_store(csv_file_path: str) -> dict:
             collection_name = 'csv_questions',
             collection_metadata = {"hnsw:space": "cosine"}
         )
+    except Exception as error:
+        return {'status': 'ERROR', 'message': f'ERROR - [DataVectorStore:S5] - {error}'}
+
+    # Verify Vector Store Database File Created:S6
+    try:
+        chroma_db_file_path = os.path.join('kbdb', 'chroma.sqlite3')
+        if not os.path.exists(chroma_db_file_path):
+            return {'status': 'ERROR', 'message': 'ERROR - [DataVectorStore:S6] - Chroma Database File Not Found'}
         return {'status': 'SUCCESS', 'message': 'Vector Store Created Successfully'}
     except Exception as error:
-        return {'status': 'ERROR', 'message': f'ERROR - [DataVectorStore:S4] - {error}'}
+        return {'status': 'ERROR', 'message': f'ERROR - [DataVectorStore:S6] - {error}'}

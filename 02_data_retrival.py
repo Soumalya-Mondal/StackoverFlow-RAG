@@ -1,6 +1,6 @@
 import os
 from langchain_chroma import Chroma
-from langchain_openai import AzureOpenAIEmbeddings, AzureChatOpenAI
+from langchain_openai import AzureOpenAIEmbeddings
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,14 +12,6 @@ embedding_model = AzureOpenAIEmbeddings(
     api_key=os.getenv("API_KEY"),
     azure_endpoint=os.getenv("API_ENDPOINT"),
     model=os.getenv("EMBEDDING_MODEL_NAME", "text-embedding-3-large"),
-    api_version=os.getenv("API_VERSION", "2024-02-01")
-)
-
-# Load LLM model for consistency
-model = AzureChatOpenAI(
-    api_key=os.getenv("API_KEY"),
-    azure_endpoint=os.getenv("API_ENDPOINT"),
-    deployment_name=os.getenv("LLM_MODEL_NAME", "gpt-4o-mini"),
     api_version=os.getenv("API_VERSION", "2024-02-01")
 )
 
