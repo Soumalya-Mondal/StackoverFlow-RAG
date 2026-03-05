@@ -3,6 +3,7 @@ def data_retrieval(query: str) -> dict:
     # Importing Python Module:S1
     try:
         import os
+        from pathlib import Path
         from langchain_openai import AzureOpenAIEmbeddings
         from langchain_chroma import Chroma
     except Exception as error:
@@ -14,6 +15,8 @@ def data_retrieval(query: str) -> dict:
         AZURE_API_KEY = os.getenv('AZURE_API_KEY')
         AZURE_API_DEPLOYMENT_NAME = os.getenv('AZURE_API_DEPLOYMENT_NAME')
         AZURE_API_VERSION = os.getenv('AZURE_API_VERSION')
+        PERSIST_DIRECTORY = os.getenv('PERSIST_DIRECTORY', 'kbdb')
+        COLLECTION_NAME = os.getenv('COLLECTION_NAME', 'csv_questions')
         # Define required environment variables
         required_env_vars = {
             'AZURE_OPENAI_ENDPOINT': AZURE_API_ENDPOINT,
@@ -44,7 +47,8 @@ def data_retrieval(query: str) -> dict:
     # Load Vector Store From Persistent Directory:S3
     try:
         db = Chroma(
-            persist_directory = 'kbdb',
+            persist_directory = PERSIST_DIRECTORY,
+            collection_name = COLLECTION_NAME,
             embedding_function = azure_embedding_object,
             collection_metadata = {"hnsw:space": "cosine"}
         )

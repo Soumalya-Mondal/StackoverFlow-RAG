@@ -3,6 +3,7 @@ def data_vector_store(csv_file_path: str) -> dict:
     # Importing Python Module:S1
     try:
         import os
+        from pathlib import Path
         from langchain_openai import AzureOpenAIEmbeddings
         import pandas
         from langchain_core.documents import Document
@@ -16,6 +17,8 @@ def data_vector_store(csv_file_path: str) -> dict:
         AZURE_API_KEY = os.getenv('AZURE_API_KEY')
         AZURE_API_DEPLOYMENT_NAME = os.getenv('AZURE_API_DEPLOYMENT_NAME')
         AZURE_API_VERSION = os.getenv('AZURE_API_VERSION')
+        PERSIST_DIRECTORY = os.getenv('PERSIST_DIRECTORY', 'kbdb')
+        COLLECTION_NAME = os.getenv('COLLECTION_NAME', 'csv_questions')
 
         # Define required environment variables
         required_env_vars = {
@@ -44,8 +47,8 @@ def data_vector_store(csv_file_path: str) -> dict:
 
     # Check If Vector Store Already Exists:S3
     try:
-        chroma_db_file_path = os.path.join('kbdb', 'chroma.sqlite3')
-        if os.path.exists(chroma_db_file_path):
+        chroma_db_file_path = Path(PERSIST_DIRECTORY) / 'chroma.sqlite3'
+        if chroma_db_file_path.exists():
             return {'status': 'SUCCESS', 'message': 'Vector Store Already Exists'}
     except Exception as error:
         return {'status': 'ERROR', 'message': f'ERROR - [DataVectorStore:S3] - {error}'}
@@ -78,8 +81,8 @@ def data_vector_store(csv_file_path: str) -> dict:
         Chroma.from_documents(
             documents = documents,
             embedding = azure_embedding_object,
-            persist_directory = 'kbdb',
-            collection_name = 'csv_questions',
+            persist_directory = PERSIST_DIRECTORY,
+            collection_name = COLLECTION_NAME,
             collection_metadata = {"hnsw:space": "cosine"}
         )
     except Exception as error:
@@ -87,8 +90,8 @@ def data_vector_store(csv_file_path: str) -> dict:
 
     # Verify Vector Store Database File Created:S6
     try:
-        chroma_db_file_path = os.path.join('kbdb', 'chroma.sqlite3')
-        if not os.path.exists(chroma_db_file_path):
+        chroma_db_file_path = Path(PERSIST_DIRECTORY) / 'chroma.sqlite3'
+        if not chroma_db_file_path.exists():
             return {'status': 'ERROR', 'message': 'ERROR - [DataVectorStore:S6] - Chroma Database File Not Found'}
         return {'status': 'SUCCESS', 'message': 'Vector Store Created Successfully'}
     except Exception as error:
