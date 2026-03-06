@@ -8,67 +8,67 @@ from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
 load_dotenv()
 
 # Connect to your document database
-persistent_directory = "db/chroma_db"
+persistent_directory = 'db/chroma_db'
 embeddings = AzureOpenAIEmbeddings(
-    api_key=os.getenv("API_KEY"),
-    azure_endpoint=os.getenv("API_ENDPOINT"),
-    model=os.getenv("EMBEDDING_MODEL_NAME", "text-embedding-3-large"),
-    api_version=os.getenv("API_VERSION", "2024-02-01")
+    api_key=os.getenv('API_KEY'),
+    azure_endpoint=os.getenv('API_ENDPOINT'),
+    model=os.getenv('EMBEDDING_MODEL_NAME', 'text-embedding-3-large'),
+    api_version=os.getenv('API_VERSION', '2024-02-01')
 )
 db = Chroma(persist_directory=persistent_directory, embedding_function=embeddings)
 
 # Set up Azure AI model
 model = AzureChatOpenAI(
-    api_key=os.getenv("API_KEY"),
-    azure_endpoint=os.getenv("API_ENDPOINT"),
-    deployment_name=os.getenv("LLM_MODEL_NAME", "gpt-4o-mini"),
-    api_version=os.getenv("API_VERSION", "2024-02-01")
+    api_key=os.getenv('API_KEY'),
+    azure_endpoint=os.getenv('API_ENDPOINT'),
+    deployment_name=os.getenv('LLM_MODEL_NAME', 'gpt-4o-mini'),
+    api_version=os.getenv('API_VERSION', '2024-02-01')
 )
 
 # Store our conversation as messages
 chat_history = []
 
 def ask_question(user_question):
-    print(f"\n--- You asked: {user_question} ---")
+    print(f'\n--- You asked: {user_question} ---')
     
     # Step 1: Make the question clear using conversation history
     if chat_history:
         # Ask AI to make the question standalone
         messages = [
-            SystemMessage(content="Given the chat history, rewrite the new question to be standalone and searchable. Just return the rewritten question."),
+            SystemMessage(content='Given the chat history, rewrite the new question to be standalone and searchable. Just return the rewritten question.'),
         ] + chat_history + [
-            HumanMessage(content=f"New question: {user_question}")
+            HumanMessage(content=f'New question: {user_question}')
         ]
         
         result = model.invoke(messages)
         search_question = result.content.strip()
-        print(f"Searching for: {search_question}")
+        print(f'Searching for: {search_question}')
     else:
         search_question = user_question
     
     # Step 2: Find relevant documents
-    retriever = db.as_retriever(search_kwargs={"k": 3})
+    retriever = db.as_retriever(search_kwargs={'k': 3})
     docs = retriever.invoke(search_question)
     
-    print(f"Found {len(docs)} relevant documents:")
+    print(f'Found {len(docs)} relevant documents:')
     for i, doc in enumerate(docs, 1):
         # Show first 2 lines of each document
         lines = doc.page_content.split('\n')[:2]
         preview = '\n'.join(lines)
-        print(f"  Doc {i}: {preview}...")
+        print(f'  Doc {i}: {preview}...')
     
     # Step 3: Create final prompt
-    combined_input = f"""Based on the following documents, please answer this question: {user_question}
+    combined_input = f'''Based on the following documents, please answer this question: {user_question}
 
     Documents:
-    {"\n".join([f"- {doc.page_content}" for doc in docs])}
+    {'\n'.join([f'- {doc.page_content}' for doc in docs])}
 
     Please provide a clear, helpful answer using only the information from these documents. If you can't find the answer in the documents, say "I don't have enough information to answer that question based on the provided documents."
-    """
+    '''
     
     # Step 4: Get the answer
     messages = [
-        SystemMessage(content="You are a helpful assistant that answers questions based on provided documents and conversation history."),
+        SystemMessage(content='You are a helpful assistant that answers questions based on provided documents and conversation history.'),
     ] + chat_history + [
         HumanMessage(content=combined_input)
     ]
@@ -80,18 +80,18 @@ def ask_question(user_question):
     chat_history.append(HumanMessage(content=user_question))
     chat_history.append(AIMessage(content=answer))
     
-    print(f"Answer: {answer}")
+    print(f'Answer: {answer}')
     return answer
 
 # Simple chat loop
 def start_chat():
-    print("Ask me questions! Type 'quit' to exit.")
+    print('Ask me questions! Type \'quit\' to exit.')
     
     while True:
-        question = input("\nYour question: ")
+        question = input('\nYour question: ')
         
         if question.lower() == 'quit':
-            print("Goodbye!")
+            print('Goodbye!')
             break
             
         ask_question(question)

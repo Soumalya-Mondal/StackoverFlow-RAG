@@ -50,7 +50,7 @@ def data_retrieval(query: str) -> dict:
             persist_directory = PERSIST_DIRECTORY,
             collection_name = COLLECTION_NAME,
             embedding_function = azure_embedding_object,
-            collection_metadata = {"hnsw:space": "cosine"}
+            collection_metadata = {'hnsw:space': 'cosine'}
         )
     except Exception as error:
         return {'status': 'ERROR', 'message': f'ERROR - [DataRetrieval:S3] - {error}', 'documents': []}
@@ -58,10 +58,10 @@ def data_retrieval(query: str) -> dict:
     # Create Retriever With Similarity Score Threshold:S4
     try:
         retriever = db.as_retriever(
-            search_type = "similarity_score_threshold",
+            search_type = 'similarity_score_threshold',
             search_kwargs = {
-                "k": 5,
-                "score_threshold": 0.8
+                'k': 5,
+                'score_threshold': 0.5
             }
         )
     except Exception as error:

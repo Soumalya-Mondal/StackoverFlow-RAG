@@ -29,7 +29,7 @@ def merge_csv_files(input_folder_path: str, output_folder_path: str) -> dict:
             try:
                 csv_file_dataframe = pandas.read_csv(csv_file, usecols = required_columns)
                 # Rename columns to lowercase with underscores
-                csv_file_dataframe = csv_file_dataframe.rename(columns = {"Question_ID": "question_id", "Question_Title": "question_title"})
+                csv_file_dataframe = csv_file_dataframe.rename(columns = {'Question_ID': 'question_id', 'Question_Title': 'question_title'})
                 # Reorder columns: "question_title" first, then "question_id"
                 csv_file_dataframe = csv_file_dataframe[["question_title", "question_id"]]
                 combined_dataframes.append(csv_file_dataframe)

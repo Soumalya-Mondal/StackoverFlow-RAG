@@ -56,18 +56,18 @@ if __name__ == '__main__':
             merge_csv_files_backend_response = merge_csv_files(input_folder_path = str(input_folder_path), output_folder_path = str(output_folder_path))
             # Validate backend response is not empty or None
             if (merge_csv_files_backend_response is None) or (not merge_csv_files_backend_response):
-                print(f'ERROR - [Main:S6] - Invalid Response From "merge_csv_files" Micro-Service Backend')
+                print(f"ERROR - [Main:S6] - Invalid Response From 'merge_csv_files' Micro-Service Backend")
             else:
                 # check the response from "merge_csv_files" function and print appropriate message
                 if (str(merge_csv_files_backend_response['status']).upper() == 'SUCCESS'):
                     if (merge_csv_files_backend_response.get('merge_csv_file_path') != 'N/A'):
-                        print(f'STEP-2 -- {merge_csv_files_backend_response["message"]}')
+                        print(f"STEP-2 -- {merge_csv_files_backend_response['message']}")
                     else:
-                        print(f'ERROR - [Main:S6] - File Path Is Not Available')
+                        print(f"ERROR - [Main:S6] - File Path Is Not Available")
                 if (str(merge_csv_files_backend_response['status']).upper() == 'ERROR'):
-                    print(f'ERROR - [Main:S6] - {merge_csv_files_backend_response["message"]}')
+                    print(f"ERROR - [Main:S6] - {merge_csv_files_backend_response['message']}")
         except Exception as error:
-            print(f'ERROR - [Main:S6] - {error}')
+            print(f"ERROR - [Main:S6] - {error}")
 
     # Calling "api_credential_check" Function:S7
     if not EMBEDDED_DATA_PRESENT_STATUS:
@@ -76,15 +76,15 @@ if __name__ == '__main__':
             api_credential_check_backend_response = api_credential_check()
             # Validate backend response is not empty or None
             if (api_credential_check_backend_response is None) or (not api_credential_check_backend_response):
-                print(f'ERROR - [Main:S7] - Invalid Response From "api_credential_check" Micro-Service Backend')
+                print(f"ERROR - [Main:S7] - Invalid Response From 'api_credential_check' Micro-Service Backend")
             else:
                 # check the response from "api_credential_check" function and print appropriate message
                 if (str(api_credential_check_backend_response['status']).upper() == 'SUCCESS'):
-                    print(f'STEP-3 -- {api_credential_check_backend_response["message"]}')
+                    print(f"STEP-3 -- {api_credential_check_backend_response['message']}")
                 if (str(api_credential_check_backend_response['status']).upper() == 'ERROR'):
-                    print(f'ERROR - [Main:S7] - {api_credential_check_backend_response["message"]}')
+                    print(f"ERROR - [Main:S7] - {api_credential_check_backend_response['message']}")
         except Exception as error:
-            print(f'ERROR - [Main:S7] - {error}')
+            print(f"ERROR - [Main:S7] - {error}")
 
     # Calling "data_vector_store" Function:S8
     if not EMBEDDED_DATA_PRESENT_STATUS:
@@ -93,28 +93,28 @@ if __name__ == '__main__':
             data_vector_store_backend_response = data_vector_store(csv_file_path = str(merge_csv_files_backend_response['merge_csv_file_path']))
             # Validate backend response is not empty or None
             if (data_vector_store_backend_response is None) or (not data_vector_store_backend_response):
-                print(f'ERROR - [Main:S8] - Invalid Response From "data_vector_store" Micro-Service Backend')
+                print(f"ERROR - [Main:S8] - Invalid Response From 'data_vector_store' Micro-Service Backend")
             else:
                 # check the response from "data_vector_store" function and print appropriate message
                 if (str(data_vector_store_backend_response['status']).upper() == 'SUCCESS'):
-                    print(f'STEP-4 -- {data_vector_store_backend_response["message"]}')
+                    print(f"STEP-4 -- {data_vector_store_backend_response['message']}")
                 if (str(data_vector_store_backend_response['status']).upper() == 'ERROR'):
-                    print(f'ERROR - [Main:S8] - {data_vector_store_backend_response["message"]}')
+                    print(f"ERROR - [Main:S8] - {data_vector_store_backend_response['message']}")
         except Exception as error:
-            print(f'ERROR - [Main:S8] - {error}')
+            print(f"ERROR - [Main:S8] - {error}")
 
     # Calling "data_retrieval" Function:S9
     try:
-        query = "How do I run Rake tasks within a Ruby script?"
+        query = 'How do I run Rake tasks within a Ruby script?'
         print('STEP-5 -- Retrieving Relevant Documents')
         data_retrieval_backend_response = data_retrieval(query = query)
         # Validate backend response is not empty or None
         if (data_retrieval_backend_response is None) or (not data_retrieval_backend_response):
-            print(f'ERROR - [Main:S9] - Invalid Response From "data_retrieval" Micro-Service Backend')
+            print(f"ERROR - [Main:S9] - Invalid Response From 'data_retrieval' Micro-Service Backend")
         else:
             # check the response from "data_retrieval" function and print appropriate message
             if (str(data_retrieval_backend_response['status']).upper() == 'SUCCESS'):
-                print(f'STEP-5 -- {data_retrieval_backend_response["message"]}')
+                print(f"STEP-5 -- {data_retrieval_backend_response['message']}")
                 # Print retrieved documents
                 if data_retrieval_backend_response.get('documents'):
                     print('--- Retrieved Documents ---')
@@ -123,6 +123,6 @@ if __name__ == '__main__':
                         content = doc.get('content')
                         print(f'Document {i}:\nQuestion ID: {question_id}\n{content}\n')
             if (str(data_retrieval_backend_response['status']).upper() == 'ERROR'):
-                print(f'ERROR - [Main:S9] - {data_retrieval_backend_response["message"]}')
+                print(f"ERROR - [Main:S9] - {data_retrieval_backend_response['message']}")
     except Exception as error:
-        print(f'ERROR - [Main:S9] - {error}')
+        print(f"ERROR - [Main:S9] - {error}")

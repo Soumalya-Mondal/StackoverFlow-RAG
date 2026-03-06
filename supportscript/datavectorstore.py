@@ -83,7 +83,7 @@ def data_vector_store(csv_file_path: str) -> dict:
             embedding = azure_embedding_object,
             persist_directory = PERSIST_DIRECTORY,
             collection_name = COLLECTION_NAME,
-            collection_metadata = {"hnsw:space": "cosine"}
+            collection_metadata = {'hnsw:space': 'cosine'}
         )
     except Exception as error:
         return {'status': 'ERROR', 'message': f'ERROR - [DataVectorStore:S5] - {error}'}

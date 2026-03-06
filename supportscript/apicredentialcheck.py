@@ -45,7 +45,7 @@ def api_credential_check() -> dict:
     # Execute Embeddings Request:S4
     try:
         response = client.embeddings.create(
-            input = ["first phrase", "second phrase", "third phrase"],
+            input = ['first phrase', 'second phrase', 'third phrase'],
             model = AZURE_API_DEPLOYMENT_NAME
         )
     except Exception as error:
