@@ -106,7 +106,7 @@ if __name__ == '__main__':
 
     # Calling "data_retrieval" Function:S9
     try:
-        query = 'How do I run Rake tasks?'
+        query = 'How to set up a CSS switcher?'
         print('STEP-5 -- Retrieving Relevant Documents')
         data_retrieval_backend_response = data_retrieval(query = query)
         # Validate backend response is not empty or None

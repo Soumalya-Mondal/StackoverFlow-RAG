@@ -1,7 +1,4 @@
 # define "fetch_question" function
-from huggingface_hub import User
-
-
 def fetch_question(question_id_list) -> dict:
     # Importing Python Module:S1
     try:
@@ -52,4 +49,4 @@ def fetch_question(question_id_list) -> dict:
             return {'status': 'ERROR', 'message': f'ERROR - [FetchQuestion:S4] - {error}'}
 
     # Return successful response with question data
-    return {'status': 'SUCCESS', 'data': {qid: qdata['cleaned_html'] for qid, qdata in question_map.items()}}
+    return {'status': 'SUCCESS', 'message': 'Successfully Fetched And Cleaned All Questions From Stack Overflow', 'data': {qid: qdata['cleaned_html'] for qid, qdata in question_map.items()}}
