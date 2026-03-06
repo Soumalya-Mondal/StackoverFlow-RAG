@@ -20,7 +20,7 @@ embedding_model = AzureOpenAIEmbeddings(
 db = Chroma(
     persist_directory=persistent_directory,
     embedding_function=embedding_model,
-    collection_metadata={'hnsw:space': 'cosine'}  
+    collection_metadata={'hnsw:space': 'l2'}  
 )
 
 # Search for relevant documents
@@ -32,7 +32,7 @@ retriever = db.as_retriever(
     search_type='similarity_score_threshold',
     search_kwargs={
         'k': 5,
-        'score_threshold': 0.3  # Only return chunks with cosine similarity ≥ 0.3
+        'score_threshold': 1.0  # Only return chunks with distance ≤ 1.0
     }
 )
 

@@ -61,7 +61,7 @@ def data_retrieval(query: str) -> dict:
             search_type = 'similarity_score_threshold',
             search_kwargs = {
                 'k': 5,
-                'score_threshold': 0.5
+                'score_threshold': 0.6
             }
         )
     except Exception as error:
