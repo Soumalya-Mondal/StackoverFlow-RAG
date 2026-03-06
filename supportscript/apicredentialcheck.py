@@ -11,14 +11,14 @@ def api_credential_check() -> dict:
     try:
         AZURE_API_ENDPOINT = os.getenv('AZURE_API_ENDPOINT')
         AZURE_API_KEY = os.getenv('AZURE_API_KEY')
-        AZURE_API_DEPLOYMENT_NAME = os.getenv('AZURE_API_DEPLOYMENT_NAME')
+        AZURE_API_EMBEDDING_DEPLOYMENT_NAME = os.getenv('AZURE_API_EMBEDDING_DEPLOYMENT_NAME')
         AZURE_API_VERSION = os.getenv('AZURE_API_VERSION')
 
         # Define required environment variables
         required_env_vars = {
             'AZURE_API_ENDPOINT': AZURE_API_ENDPOINT,
             'AZURE_API_KEY': AZURE_API_KEY,
-            'AZURE_API_DEPLOYMENT_NAME': AZURE_API_DEPLOYMENT_NAME,
+            'AZURE_API_EMBEDDING_DEPLOYMENT_NAME': AZURE_API_EMBEDDING_DEPLOYMENT_NAME,
             'AZURE_API_VERSION': AZURE_API_VERSION
         }
         # Check for missing or empty environment variables
@@ -46,7 +46,7 @@ def api_credential_check() -> dict:
     try:
         response = client.embeddings.create(
             input = ['first phrase', 'second phrase', 'third phrase'],
-            model = AZURE_API_DEPLOYMENT_NAME
+            model = AZURE_API_EMBEDDING_DEPLOYMENT_NAME
         )
     except Exception as error:
         return {'status': 'ERROR', 'message': f'ERROR - [APICredentialCheck:S4] - {error}'}

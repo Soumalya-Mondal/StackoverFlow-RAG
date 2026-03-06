@@ -18,6 +18,7 @@ if __name__ == '__main__':
         from supportscript.datavectorstore import data_vector_store
         from supportscript.apicredentialcheck import api_credential_check
         from supportscript.dataretrival import data_retrieval
+        from supportscript.fetchquestion import fetch_question
     except Exception as error:
         print(f'ERROR - [Main:S2] - {error}')
 
@@ -115,14 +116,38 @@ if __name__ == '__main__':
             # check the response from "data_retrieval" function and print appropriate message
             if (str(data_retrieval_backend_response['status']).upper() == 'SUCCESS'):
                 print(f"STEP-5 -- {data_retrieval_backend_response['message']}")
-                # Print retrieved documents
-                if data_retrieval_backend_response.get('documents'):
-                    print('--- Retrieved Documents ---')
-                    for i, doc in enumerate(data_retrieval_backend_response['documents'], 1):
-                        question_id = doc.get('metadata', {}).get('question_id')
-                        content = doc.get('content')
-                        print(f'Document {i}:\nQuestion ID: {question_id}\n{content}\n')
             if (str(data_retrieval_backend_response['status']).upper() == 'ERROR'):
                 print(f"ERROR - [Main:S9] - {data_retrieval_backend_response['message']}")
     except Exception as error:
         print(f"ERROR - [Main:S9] - {error}")
+
+    # Calling "fetch_question" Function:S10
+    try:
+        # Extract question IDs from retrieved documents
+        question_id_list = []
+        if (data_retrieval_backend_response is not None) and data_retrieval_backend_response.get('documents'):
+            for doc in data_retrieval_backend_response['documents']:
+                qid = doc.get('metadata', {}).get('question_id')
+                if qid is not None:
+                    question_id_list.append(qid)
+
+        # Only proceed if we have question ids
+        if question_id_list:
+            print('STEP-6 -- Fetching Questions From StackOverflow')
+            fetch_question_backend_response = fetch_question(question_id_list)
+            if (fetch_question_backend_response is None) or (not fetch_question_backend_response):
+                print(f"ERROR - [Main:S10] - Invalid Response From 'fetch_question' Micro-Service Backend")
+            else:
+                if (str(fetch_question_backend_response.get('status', '')).upper() == 'SUCCESS'):
+                    print(f"STEP-6 -- {fetch_question_backend_response.get('message', '')}")
+                    # Print all qid and qdata from the response
+                    questions_data = fetch_question_backend_response.get('data', {})
+                    for qid, qdata in questions_data.items():
+                        print(f"\nQuestion ID: {qid}")
+                        print(f"Question Data: {qdata}")
+                if (str(fetch_question_backend_response.get('status', '')).upper() == 'ERROR'):
+                    print(f"ERROR - [Main:S10] - {fetch_question_backend_response.get('message', '')}")
+        else:
+            print('STEP-6 -- No Question IDs Found In Retrieved Documents; Skipping Fetch')
+    except Exception as error:
+        print(f"ERROR - [Main:S10] - {error}")

@@ -15,7 +15,7 @@ def data_vector_store(csv_file_path: str) -> dict:
     try:
         AZURE_API_ENDPOINT = os.getenv('AZURE_API_ENDPOINT')
         AZURE_API_KEY = os.getenv('AZURE_API_KEY')
-        AZURE_API_DEPLOYMENT_NAME = os.getenv('AZURE_API_DEPLOYMENT_NAME')
+        AZURE_API_EMBEDDING_DEPLOYMENT_NAME = os.getenv('AZURE_API_EMBEDDING_DEPLOYMENT_NAME')
         AZURE_API_VERSION = os.getenv('AZURE_API_VERSION')
         PERSIST_DIRECTORY = os.getenv('PERSIST_DIRECTORY', 'kbdb')
         COLLECTION_NAME = os.getenv('COLLECTION_NAME', 'csv_questions')
@@ -24,7 +24,7 @@ def data_vector_store(csv_file_path: str) -> dict:
         required_env_vars = {
             'AZURE_OPENAI_ENDPOINT': AZURE_API_ENDPOINT,
             'AZURE_OPENAI_API_KEY': AZURE_API_KEY,
-            'AZURE_OPENAI_EMBEDDING_DEPLOYMENT': AZURE_API_DEPLOYMENT_NAME,
+            'AZURE_OPENAI_EMBEDDING_DEPLOYMENT': AZURE_API_EMBEDDING_DEPLOYMENT_NAME,
             'AZURE_OPENAI_API_VERSION': AZURE_API_VERSION
         }
         # Check for missing or empty environment variables
@@ -40,7 +40,7 @@ def data_vector_store(csv_file_path: str) -> dict:
             azure_endpoint = AZURE_API_ENDPOINT,
             api_key = AZURE_API_KEY,
             openai_api_version = AZURE_API_VERSION,
-            azure_deployment = AZURE_API_DEPLOYMENT_NAME
+            azure_deployment = AZURE_API_EMBEDDING_DEPLOYMENT_NAME
         )
     except Exception as error:
         return {'status': 'ERROR', 'message': f'ERROR - [DataVectorStore:S2] - {error}'}
